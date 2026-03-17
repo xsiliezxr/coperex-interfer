@@ -1,0 +1,19 @@
+{
+  "name": "coperex-interfer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter \"./apps/*\" --parallel run dev",
+    "start": "pnpm --filter \"./apps/*\" --parallel run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.1",
+  "devDependencies": {
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1"
+  }
+}
