@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16
+    container_name: coperex_interfer_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: DBCoperexInterferAuth
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5440:5432"
+    volumes:
+      - coperex_interfer_auth_01:/var/lib/postgresql/data
+
+volumes:
+  coperex_interfer_auth_01:
