@@ -15,7 +15,6 @@ import {
   notFound,
 } from '../middlewares/server-genericError-handler.js';
 import authRoutes from '../src/auth/auth.routes.js';
-import userRoutes from '../src/users/user.routes.js';
 
 const BASE_PATH = '/api/v1/coperex';
 
@@ -30,8 +29,6 @@ const middlewares = (app) => {
 
 const routes = (app) => {
   app.use(`${BASE_PATH}/auth`, authRoutes);
-  app.use(`${BASE_PATH}/users`, userRoutes);
-
   app.get(`${BASE_PATH}/health`, (req, res) => {
     res.status(200).json({
       status: 'Healthy',

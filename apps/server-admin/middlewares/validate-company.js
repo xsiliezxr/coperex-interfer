@@ -1,7 +1,7 @@
 import Company from '../src/companies/company.model.js';
 import { validateJWT } from '@coperex-interfer/shared';
 import { checkValidators } from './checkValidators.js';
-import { body } from 'express-validator';
+import { body,query } from 'express-validator';
 export const validateCompanyExists = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -123,5 +123,18 @@ export const validateChangeCompanyStatus = [
         .withMessage('El estado de la empresa es obligatorio')
         .isBoolean()
         .withMessage('El estado de la empresa debe ser un valor booleano'),
+    checkValidators
+]
+
+export const validateGetCompanies = [
+    validateJWT,
+    query('yearsTrayectory')
+        .optional()
+        .isNumeric()
+        .withMessage('Los años deben ser un número'),
+    query('sort')
+        .optional()
+        .isIn(['A-Z', 'Z-A'])
+        .withMessage('Orden no válido'),
     checkValidators
 ]

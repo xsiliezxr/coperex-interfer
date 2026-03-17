@@ -71,6 +71,7 @@ const router = Router();
  */
 router.post(
   '/register',
+  validateJWT,
   authRateLimit,
   upload.single('profilePicture'),
   handleUploadError,

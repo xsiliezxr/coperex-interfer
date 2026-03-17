@@ -4,25 +4,53 @@ export const buildCompaniesExcel = async (companies) => {
     const workbook = new exceljs.Workbook();
     const worksheet = workbook.addWorksheet('Empresas Interfer');
 
-    // Estilo básico para los encabezados
     worksheet.columns = [
-        { header: 'Nombre', key: 'nombre', width: 30 },
-        { header: 'Categoría', key: 'categoria', width: 25 },
-        { header: 'Años de Trayectoria', key: 'aniosTrayectoria', width: 20 },
-        { header: 'Nivel de Impacto', key: 'nivelImpacto', width: 20 },
-        { header: 'Estado', key: 'estadoTexto', width: 15 }
+        { header: 'Nombre', key: 'name', width: 30 },
+        { header: 'Categoría', key: 'category', width: 25 },
+        { header: 'Años de Trayectoria', key: 'yearsTrayectory', width: 20 },
+        { header: 'Nivel de Impacto', key: 'levelImpact', width: 20 },
+        { header: 'Estado', key: 'isActive', width: 15 }
     ];
 
-    // Formatear los datos antes de insertarlos
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell((cell) => {
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF002060' } 
+        };
+        cell.font = {
+            color: { argb: 'FFFFFFFF' },
+            bold: true,
+            size: 12
+        };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+    });
+    headerRow.height = 25;
+
     const rows = companies.map(company => ({
-        nombre: company.nombre,
-        categoria: company.categoria,
-        aniosTrayectoria: company.aniosTrayectoria,
-        nivelImpacto: company.nivelImpacto,
-        estadoTexto: company.isActive ? 'Activo' : 'Inactivo'
+        name: company.name,
+        category: company.category,
+        yearsTrayectory: company.yearsTrayectory,
+        levelImpact: company.levelImpact,
+        isActive: company.isActive ? 'Activo' : 'Inactivo' 
     }));
 
     worksheet.addRows(rows);
 
-    return workbook; // Devolvemos el libro de Excel construido
+
+    worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber > 1) {
+            row.eachCell((cell) => {
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                cell.border = {
+                    bottom: { style: 'thin', color: { argb: 'FFDDDDDD' } }
+                };
+            });
+        }
+    });
+
+    worksheet.autoFilter = 'A1:E1';
+
+    return workbook;
 };

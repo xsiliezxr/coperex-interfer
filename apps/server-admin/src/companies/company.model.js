@@ -19,7 +19,8 @@ const categories = [
 const companySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "El nombre es requerido."]
+        required: [true, "El nombre es requerido."],
+        unique: true,
     },
     description: {
         type: String,
@@ -73,7 +74,6 @@ companySchema.index( { isActive: 1 } );
 companySchema.index( { category: 1 } );
 companySchema.index( { levelImpact: 1 } );
 companySchema.index( { yearsTrayectory: 1 } );
-companySchema.index( { name: 1 } );
 companySchema.index( { name: 1, isActive: 1 } );
 
 export default mongoose.model('Company', companySchema);

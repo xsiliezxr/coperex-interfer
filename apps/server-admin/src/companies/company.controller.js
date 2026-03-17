@@ -1,5 +1,6 @@
 import Company from './company.model.js';
 import { buildCompaniesExcel } from '../../helpers/excel-generator.js';
+import { buildCompanyQuery } from '../../helpers/query-builder.js';
 
 export const createCompany = async (req, res) => {
     try {
@@ -21,33 +22,20 @@ export const createCompany = async (req, res) => {
 
 export const getCompanies = async (req, res) => {
     try {
-        const { page = 1, limit = 10, isActive = true } = req.query;
-
-        const filter = { isActive };
-
-        const options = {
-            page: parseInt(page),
-            limit: parseInt(limit),
-            sort: { createdAt: -1 }
-        }
+        const { filter, sortOptions, page, limit } = buildCompanyQuery(req.query);
 
         const companies = await Company.find(filter)
-            .limit(limit * 1)
+            .limit(limit)
             .skip((page - 1) * limit)
-            .sort(options.sort);
+            .sort(sortOptions);
 
         const total = await Company.countDocuments(filter);
 
         res.status(200).json({
             success: true,
             data: companies,
-            pagination: {
-                currentPage: page,
-                totalPages: Math.ceil(total / limit),
-                totalRecords: total,
-                limit
-            }
-        })
+            pagination: { currentPage: page, totalRecords: total }
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -109,17 +97,14 @@ export const changeCompanyStatus = async (req, res) => {
 
 export const generateExcelReport = async (req, res) => {
     try {
-        // 1. Obtener todas las empresas (puedes ordenarlas de la A-Z por defecto)
-        const companies = await Company.find().sort({ nombre: 1 });
 
-        // 2. Llamar al helper
+        const companies = await Company.find().sort({ name: 1 });
+
         const workbook = await buildCompaniesExcel(companies);
 
-        // 3. Configurar headers para descarga
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=Reporte_Empresas_Interfer.xlsx');
 
-        // 4. Escribir y enviar
         await workbook.xlsx.write(res);
         res.status(200).end();
 

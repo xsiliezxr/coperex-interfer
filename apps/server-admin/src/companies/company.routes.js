@@ -1,14 +1,17 @@
 import Router from 'express';
 import { createCompany, updateCompany, changeCompanyStatus, getCompanyById, getCompanies, generateExcelReport } from './company.controller.js';
-import { validateCompanyExists, validateCreateCompany, validateUpdateCompany, validateChangeCompanyStatus } from '../../middlewares/validate-company.js';
+import { validateCompanyExists, validateCreateCompany, validateUpdateCompany, validateChangeCompanyStatus,validateGetCompanies } from '../../middlewares/validate-company.js';
 import { validateJWT } from '@coperex-interfer/shared';
 
 const router = Router();
 
 router.use(validateJWT);
 
-router.get('/report/excel', generateExcelReport);
-router.get('/', getCompanies);
+router.get('/report/excel',
+    generateExcelReport);
+router.get('/', 
+    validateGetCompanies,
+    getCompanies);
 router.post('/', validateCreateCompany, createCompany);
 
 router.get('/:id', validateCompanyExists, getCompanyById);
